@@ -1,4 +1,8 @@
-"""Models for the News application."""
+"""Persist role-aware users, publishers, reporting and delivery status.
+
+Relationships are normalised with foreign keys and many-to-many tables.
+Role-aware User properties return None where a relationship is inapplicable.
+"""
 
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
@@ -7,7 +11,11 @@ from django.db import models
 
 
 class User(AbstractUser):
-    """User for the News application."""
+    """An authenticated account with reader, editor or journalist workflow.
+
+    Reader subscriptions are stored separately from publisher staff membership.
+    Save signals synchronise the role with the corresponding Django group.
+    """
 
     role = models.CharField(
         max_length=12,
@@ -31,7 +39,11 @@ class User(AbstractUser):
 
     @property
     def reader_subscriptions(self):
-        """Reader subscriptions for the News application."""
+        """Return publisher/journalist querysets for readers, else None.
+
+        :return: Two lazy subscription querysets, or None for other roles.
+        :rtype: tuple or None
+        """
         if self.role != "reader":
             return None
         return (
@@ -41,7 +53,11 @@ class User(AbstractUser):
 
     @property
     def independent_articles(self):
-        """Independent articles for the News application."""
+        """Return this journalist's publisher-free articles, else None.
+
+        :return: A lazy Article queryset for journalists, otherwise None.
+        :rtype: django.db.models.QuerySet or None
+        """
         return (
             self.articles.filter(publisher__isnull=True)
             if self.role == "journalist"
@@ -50,7 +66,11 @@ class User(AbstractUser):
 
     @property
     def independent_newsletters(self):
-        """Independent newsletters for the News application."""
+        """Return publisher-free newsletters for journalists, else None.
+
+        :return: A lazy Newsletter queryset, or None for other roles.
+        :rtype: django.db.models.QuerySet or None
+        """
         return (
             self.newsletters.filter(publisher__isnull=True)
             if self.role == "journalist"
@@ -59,7 +79,7 @@ class User(AbstractUser):
 
 
 class Publisher(models.Model):
-    """Publisher for the News application."""
+    """A publishing organisation with editor and journalist memberships."""
 
     name = models.CharField(max_length=150)
     description = models.TextField(blank=True)
@@ -82,7 +102,7 @@ class Publisher(models.Model):
 
 
 class Article(models.Model):
-    """Article for the News application."""
+    """Reporting that remains a draft until an editor approves it."""
 
     title = models.CharField(max_length=200)
     content = models.TextField()
@@ -146,7 +166,7 @@ class Newsletter(models.Model):
 
 
 class PublicationDelivery(models.Model):
-    """Publicationdelivery for the News application."""
+    """Record email/API completion and the latest delivery error per article."""
 
     article = models.OneToOneField(
         Article, on_delete=models.CASCADE, related_name="delivery"
@@ -157,7 +177,7 @@ class PublicationDelivery(models.Model):
 
 
 class ApprovalLog(models.Model):
-    """Approvallog for the News application."""
+    """Record an approved article received through the integration API."""
 
     article = models.OneToOneField(Article, on_delete=models.CASCADE)
     logged_at = models.DateTimeField(auto_now_add=True)
