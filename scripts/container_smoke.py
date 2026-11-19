@@ -73,7 +73,9 @@ assert article.approved
 delivery = PublicationDelivery.objects.get(article=article)
 assert delivery.email_sent and delivery.api_sent, delivery.last_error
 assert ApprovalLog.objects.filter(article=article).exists()
-response = sessions["reader"].get(BASE + "/api/articles/subscribed/", timeout=10)
+response = sessions["reader"].get(
+    BASE + "/api/articles/subscribed/", timeout=10
+)
 response.raise_for_status()
 assert any(item["id"] == article.pk for item in response.json())
 response = requests.get(BASE + "/api/articles/", timeout=10)
@@ -81,7 +83,7 @@ assert response.status_code in (401, 403)
 response = requests.get(BASE + "/static/news/style.css", timeout=10)
 response.raise_for_status()
 assert "text/css" in response.headers["Content-Type"]
-print("PASS: public role registration, group assignment and publisher management")
+print("PASS: role registration, group assignment and publisher management")
 print("PASS: journalist draft, reader subscription and editor approval")
 print("PASS: real email delivery state and authenticated API callback")
 print("PASS: subscribed JSON API, anonymous denial and static CSS")

@@ -1,1 +1,0 @@
-https://github.com/Khethelo01/django-newsroom

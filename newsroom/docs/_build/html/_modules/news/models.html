@@ -257,7 +257,7 @@
 <div class="viewcode-block" id="PublicationDelivery">
 <a class="viewcode-back" href="../../api.html#news.models.PublicationDelivery">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">PublicationDelivery</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Record email/API completion and the latest delivery error per article."""</span>
+<span class="w">    </span><span class="sd">"""Record email/API outcomes and the latest error for an article."""</span>
 
     <span class="n">article</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">OneToOneField</span><span class="p">(</span>
         <span class="n">Article</span><span class="p">,</span> <span class="n">on_delete</span><span class="o">=</span><span class="n">models</span><span class="o">.</span><span class="n">CASCADE</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s2">"delivery"</span>

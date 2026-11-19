@@ -161,9 +161,15 @@ as the explicit exception requested by this capstone brief.
 ## Verification
 
 ```powershell
-.\.venv\Scripts\python.exe newsroom\manage.py test --noinput
+.\.venv\Scripts\python.exe newsroom\manage.py test news --noinput
 .\.venv\Scripts\python.exe -m flake8 --config newsroom/.flake8 newsroom/news newsroom/config
 ```
+
+Verified run: https://github.com/Khethelo01/django-newsroom-consolidation/actions/runs/44535419207
+
+The local regression suite passed all 33 tests; lint and the warning-as-error
+Sphinx build passed. The intentional mocked offline-delivery test logs a timeout
+while checking error recording; the suite still finishes with OK.
 
 GitHub Actions builds the actual Docker image on a separate Linux machine,
 starts MariaDB and Gunicorn, checks migrations, runs the capstone tests against
