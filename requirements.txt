@@ -1,0 +1,3 @@
+# Reproducible Windows/Linux development and documentation environment.
+-r newsroom/requirements-dev.txt
+-r newsroom/requirements-docs.txt

@@ -27,6 +27,7 @@ Thumbs.db
 
 # Build caches and test output; generated HTML is intentionally committed.
 newsroom/docs/_build/doctrees/
+**/.doctrees/
 newsroom/docs/_build/doctest/
 .pytest_cache/
 .coverage
