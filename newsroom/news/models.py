@@ -166,7 +166,7 @@ class Newsletter(models.Model):
 
 
 class PublicationDelivery(models.Model):
-    """Record email/API completion and the latest delivery error per article."""
+    """Record email/API outcomes and the latest error for an article."""
 
     article = models.OneToOneField(
         Article, on_delete=models.CASCADE, related_name="delivery"
