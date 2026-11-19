@@ -1,4 +1,8 @@
-"""Services for the News application."""
+"""Approve reporting transactionally and attempt external delivery.
+
+Approval commits before delivery runs. Email and API outcomes are stored
+independently so already-completed channels can be skipped on retry.
+"""
 
 import logging
 import requests
@@ -12,7 +16,17 @@ logger = logging.getLogger(__name__)
 
 
 def approve_article(article, editor):
-    """Commit editor approval before scheduling notification delivery."""
+    """Commit editor approval before scheduling notification delivery.
+
+    :param article: An existing article; its database row is locked.
+    :type article: news.models.Article
+    :param editor: The approving authenticated editor.
+    :type editor: news.models.User
+    :return: The approved article refreshed inside the transaction.
+    :rtype: news.models.Article
+    :raises PermissionError: If the account is not an editor.
+    :raises news.models.Article.DoesNotExist: If the article was removed.
+    """
     from .policies import is_editor
 
     if not is_editor(editor):
@@ -28,7 +42,20 @@ def approve_article(article, editor):
 
 
 def deliver_article(article_id, editor_id):
-    """Deliver approval email and API logging with recorded retry state."""
+    """Attempt email and API delivery, recording errors for later retry.
+
+    An unapproved article is ignored. Delivery exceptions are recorded in
+    PublicationDelivery.last_error. Database lookup errors still propagate.
+    Email delivery can repeat some recipients after a partial batch failure.
+
+    :param article_id: Primary key of the article to deliver.
+    :type article_id: int
+    :param editor_id: Account used to authenticate the approval callback.
+    :type editor_id: int
+    :return: No value; delivery state is persisted.
+    :rtype: None
+    :raises news.models.Article.DoesNotExist: If the article is absent.
+    """
     article = Article.objects.get(pk=article_id)
     delivery, _ = PublicationDelivery.objects.get_or_create(article=article)
     if not article.approved:
