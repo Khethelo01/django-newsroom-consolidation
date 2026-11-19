@@ -1,4 +1,4 @@
-"""Local development settings for the Sticky Notes school project."""
+"""Environment-driven settings for the Newsroom Django capstone."""
 
 import os
 from pathlib import Path
@@ -6,12 +6,21 @@ from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR / ".env", override=False)
-# This fallback is for local coursework only. Set an environment key to deploy.
-SECRET_KEY = os.environ.get(
-    "DJANGO_SECRET_KEY", "local-coursework-only-sticky-notes-development-key"
-)
 DEBUG = os.environ.get("DJANGO_DEBUG", "1") == "1"
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "[::1]"]
+SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "")
+if not SECRET_KEY:
+    if not DEBUG:
+        from django.core.exceptions import ImproperlyConfigured
+
+        raise ImproperlyConfigured("Set DJANGO_SECRET_KEY before starting.")
+    SECRET_KEY = "local-newsroom-development-only-not-for-deployment"
+ALLOWED_HOSTS = [
+    host.strip()
+    for host in os.environ.get(
+        "DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1,[::1]"
+    ).split(",")
+    if host.strip()
+]
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -27,6 +36,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -84,7 +94,7 @@ TIME_ZONE = "Africa/Johannesburg"
 USE_I18N = True
 USE_TZ = True
 STATIC_URL = "static/"
-# AppDirectoriesFinder discovers notes/static automatically.
+# AppDirectoriesFinder discovers news/static automatically.
 STATIC_ROOT = BASE_DIR / "staticfiles"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
@@ -113,7 +123,7 @@ REST_FRAMEWORK = {
         "rest_framework.permissions.IsAuthenticated"
     ],
 }
-if os.environ.get("DB_ENGINE") == "mariadb":
+if os.environ.get("DB_ENGINE", "mariadb") == "mariadb":
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.mysql",
@@ -121,7 +131,7 @@ if os.environ.get("DB_ENGINE") == "mariadb":
             "USER": os.environ["DB_USER"],
             "PASSWORD": os.environ["DB_PASSWORD"],
             "HOST": os.environ.get("DB_HOST", "127.0.0.1"),
-            "PORT": os.environ.get("DB_PORT", "3307"),
+            "PORT": os.environ.get("DB_PORT", "3306"),
             "OPTIONS": {
                 "charset": "utf8mb4",
                 "init_command": "SET sql_mode='STRICT_TRANS_TABLES'",

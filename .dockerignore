@@ -1,0 +1,15 @@
+.git
+**/.venv
+**/__pycache__
+**/*.py[cod]
+**/*.sqlite3
+**/.env
+**/.env.*
+**/staticfiles
+**/docs/_build
+**/Planning
+verification
+*.bundle
+*.zip
+README.md
+capstone.txt
