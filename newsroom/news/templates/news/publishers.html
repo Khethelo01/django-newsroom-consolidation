@@ -1,0 +1,4 @@
+{% extends 'base.html' %}{% block content %}
+<h1>Publishers</h1>{% if editor %}<a class="button" href="{% url 'publisher-create' %}">Create publisher</a>{% endif %}
+<div class="grid">{% for publisher in publishers %}<article class="item"><h2>{{ publisher.name }}</h2><p>{{ publisher.description }}</p><h3>Editors</h3>{% for member in publisher.editors.all %}<p>{{ member.username }}</p>{% empty %}<p>No editors assigned.</p>{% endfor %}<h3>Journalists</h3>{% for member in publisher.journalists.all %}<p>{{ member.username }}</p>{% empty %}<p>No journalists assigned.</p>{% endfor %}{% if user in publisher.editors.all %}<a href="{% url 'publisher-edit' publisher.pk %}">Manage publisher</a>{% endif %}</article>{% empty %}<p>No publishers yet.</p>{% endfor %}</div>
+{% endblock %}

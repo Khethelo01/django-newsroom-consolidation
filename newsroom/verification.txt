@@ -1,0 +1,39 @@
+manage.py check --database default
+System check identified no issues (0 silenced).
+
+manage.py makemigrations --check --dry-run
+No changes detected
+
+manage.py test news -v 1
+Found 33 test(s).
+System check identified no issues (0 silenced).
+Creating test database for alias 'default'...
+
+............Approval integration failed
+Traceback (most recent call last):
+  File "C:\Users\DELL\OneDrive\School\Django Assignments\newsroom\news\services.py", line 67, in deliver_article
+    response = requests.post(
+        settings.APPROVAL_API_URL,
+    ...<2 lines>...
+        timeout=5,
+    )
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python314\Lib\unittest\mock.py", line 1176, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python314\Lib\unittest\mock.py", line 1180, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\DELL\AppData\Local\Programs\Python\Python314\Lib\unittest\mock.py", line 1241, in _execute_mock_call
+    raise effect
+requests.exceptions.Timeout: offline
+.....................
+----------------------------------------------------------------------
+Ran 33 tests in 4.096s
+
+OK
+Destroying test database for alias 'default'...
+
+
+-m flake8 .
+
+Docstring audit: all classes, functions and methods documented.

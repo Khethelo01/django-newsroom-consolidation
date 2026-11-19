@@ -1,0 +1,40 @@
+# Django runtime data and private configuration
+*.log
+*.pot
+*.py[cod]
+__pycache__/
+*.sqlite3
+*.sqlite3-journal
+media/
+staticfiles/
+.env
+.env.*
+!.env.example
+!.env.docker.example
+*.pem
+*.key
+
+# Virtual environments and local editor files
+.venv/
+venv/
+env/
+ENV/
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+*.bak
+
+# Build caches and test output; generated HTML is intentionally committed.
+newsroom/docs/_build/doctrees/
+newsroom/docs/_build/doctest/
+.pytest_cache/
+.coverage
+htmlcov/
+*.egg-info/
+dist/
+build/
+
+# Local evidence is supplied in the ZIP, not tracked in the public source.
+verification/
+capstone.txt
