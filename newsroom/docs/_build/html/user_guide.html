@@ -1,0 +1,177 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>User guide &mdash; Newsroom Capstone 1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=f2a433a1"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Installation and operation" href="setup.html" />
+    <link rel="prev" title="Newsroom Capstone" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Newsroom Capstone
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">User guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#getting-started">Getting started</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#reader-workflow">Reader workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#journalist-workflow">Journalist workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#editor-and-publisher-workflow">Editor and publisher workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#password-reset">Password reset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#api-usage">API usage</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="setup.html">Installation and operation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture and design decisions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">Python API reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Newsroom Capstone</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">User guide</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/user_guide.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="user-guide">
+<h1>User guide<a class="headerlink" href="#user-guide" title="Link to this heading"></a></h1>
+<section id="getting-started">
+<h2>Getting started<a class="headerlink" href="#getting-started" title="Link to this heading"></a></h2>
+<p>After starting the application, visit <a class="reference external" href="http://localhost:8000">http://localhost:8000</a>. The public home
+page lists approved articles. Select Register, enter a username and password,
+and choose Reader, Journalist or Editor. Registration signs you in.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Public editor registration is intentional for this coursework. A production
+deployment should require approval before granting editorial privileges.</p>
+</div>
+</section>
+<section id="reader-workflow">
+<h2>Reader workflow<a class="headerlink" href="#reader-workflow" title="Link to this heading"></a></h2>
+<p>Open Subscriptions and select publishers or journalists. Save the form, then
+use the subscribed-articles API to retrieve approved reporting matching those
+subscriptions. The dashboard also lists reporting available to your role.
+Publisher subscriptions include that organisation’s approved articles;
+journalist subscriptions select independent reporting by that journalist.</p>
+</section>
+<section id="journalist-workflow">
+<h2>Journalist workflow<a class="headerlink" href="#journalist-workflow" title="Link to this heading"></a></h2>
+<p>Use Write article to enter a title and content. Choose one of your publishers
+or leave it blank for independent reporting. A saved article is a draft. You
+can edit your own articles. Editing an approved article resets its approval and
+delivery records, so an editor must approve it again. You can also curate a
+newsletter from the available articles.</p>
+</section>
+<section id="editor-and-publisher-workflow">
+<h2>Editor and publisher workflow<a class="headerlink" href="#editor-and-publisher-workflow" title="Link to this heading"></a></h2>
+<p>Open Publishers and choose Create publisher. Enter its name and description,
+select its editors and journalists, and save. The managing editor remains
+assigned. An assigned editor can edit that publisher; other editors cannot
+manage its membership. Editors can review, edit, approve and delete articles.</p>
+<p>Approval attempts subscriber email and an authenticated approval-log callback.
+The development email backend writes messages to the terminal/container logs;
+it does not send real email. SMTP credentials are optional and private.
+Delivery outcomes and errors are retained for inspection and retry.</p>
+</section>
+<section id="password-reset">
+<h2>Password reset<a class="headerlink" href="#password-reset" title="Link to this heading"></a></h2>
+<p>Use the login page’s password-reset link with your registered email address.
+With the console backend, the reset email appears in the application’s logs.
+Keep those logs private because reset links grant account access.</p>
+</section>
+<section id="api-usage">
+<h2>API usage<a class="headerlink" href="#api-usage" title="Link to this heading"></a></h2>
+<p>Authenticated browser sessions or Django REST Framework tokens are accepted.
+An account’s token can be created by an administrator with:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">manage</span><span class="o">.</span><span class="n">py</span> <span class="n">drf_create_token</span> <span class="n">USERNAME</span>
+</pre></div>
+</div>
+<p>Supply <code class="docutils literal notranslate"><span class="pre">Authorization:</span> <span class="pre">Token</span> <span class="pre">YOUR_TOKEN</span></code> with API requests. Keep the token
+private. API routes include <code class="docutils literal notranslate"><span class="pre">/api/articles/</span></code>, <code class="docutils literal notranslate"><span class="pre">/api/articles/subscribed/</span></code>,
+<code class="docutils literal notranslate"><span class="pre">/api/publishers/</span></code> and <code class="docutils literal notranslate"><span class="pre">/api/newsletters/</span></code>. Approval is an editor-only POST to
+<code class="docutils literal notranslate"><span class="pre">/api/articles/ARTICLE_ID/approve/</span></code>. The <code class="docutils literal notranslate"><span class="pre">/api/approved/</span></code> callback records an
+approved article using an editor’s token.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Newsroom Capstone" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="setup.html" class="btn btn-neutral float-right" title="Installation and operation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Khethelo Ntsele.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

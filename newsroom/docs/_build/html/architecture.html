@@ -1,0 +1,158 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Architecture and design decisions &mdash; Newsroom Capstone 1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=f2a433a1"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Python API reference" href="api.html" />
+    <link rel="prev" title="Installation and operation" href="setup.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Newsroom Capstone
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="user_guide.html">User guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="setup.html">Installation and operation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Architecture and design decisions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#application-layers">Application layers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#transactions-and-delivery">Transactions and delivery</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#role-aware-data">Role-aware data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#repository-history">Repository history</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">Python API reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Newsroom Capstone</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Architecture and design decisions</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/architecture.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="architecture-and-design-decisions">
+<h1>Architecture and design decisions<a class="headerlink" href="#architecture-and-design-decisions" title="Link to this heading"></a></h1>
+<section id="application-layers">
+<h2>Application layers<a class="headerlink" href="#application-layers" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">news.models</span></code> owns the normalised domain data and validation.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">news.forms</span></code> validates browser input and role-filtered membership choices.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">news.policies</span></code> scopes visibility, editing and subscription querysets.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">news.views</span></code> handles authenticated HTML workflows.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">news.api</span></code> and <code class="docutils literal notranslate"><span class="pre">news.serializers</span></code> expose authenticated JSON endpoints.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">news.services</span></code> coordinates approval, email and integration delivery.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">news.signals</span></code> synchronises role groups and constrains subscriptions.</p></li>
+</ul>
+</section>
+<section id="transactions-and-delivery">
+<h2>Transactions and delivery<a class="headerlink" href="#transactions-and-delivery" title="Link to this heading"></a></h2>
+<p>Approval locks the article row in an atomic transaction. Delivery is scheduled
+with <code class="docutils literal notranslate"><span class="pre">transaction.on_commit</span></code> so the callback observes committed approval.
+Email and API completion are recorded separately. This is synchronous delivery,
+not a durable job queue. A partial email failure may repeat some recipients on
+retry. A production design would use an outbox/worker and stronger idempotency.</p>
+<p>The container runs Gunicorn with two workers and four threads each. Threads
+allow the approval callback to be handled while the originating request waits
+for it. The callback URL uses the container’s own loopback address and port.
+The callback checks authentication, approval and editor permission.</p>
+</section>
+<section id="role-aware-data">
+<h2>Role-aware data<a class="headerlink" href="#role-aware-data" title="Link to this heading"></a></h2>
+<p>Users select Reader, Editor or Journalist. Reader subscriptions, independent
+articles and independent newsletters are exposed through role-aware properties
+that return None when inapplicable. Many-to-many membership tables preserve
+normalisation rather than duplicating role-specific fields.</p>
+</section>
+<section id="repository-history">
+<h2>Repository history<a class="headerlink" href="#repository-history" title="Link to this heading"></a></h2>
+<p>The initial commit imports the final capstone. The <code class="docutils literal notranslate"><span class="pre">docs</span></code> branch documents
+models, policies and services in separate commits, then adds Sphinx sources and
+built HTML. The <code class="docutils literal notranslate"><span class="pre">container</span></code> branch starts separately from the initial main
+branch and adds Docker configuration. Both are merged into main, followed by
+the setup README. Generated caches and secrets are ignored; documentation HTML
+is the intentional exception requested by the brief.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="setup.html" class="btn btn-neutral float-left" title="Installation and operation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="api.html" class="btn btn-neutral float-right" title="Python API reference" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Khethelo Ntsele.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
